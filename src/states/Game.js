@@ -25,12 +25,12 @@ export default class extends Phaser.State {
     this.ground = this.add.sprite(0, 500, 'ground')
     this.game.physics.arcade.enable(this.ground)
     this.ground.body.allowGravity = false
-    this.ground.immovable = true
+    this.ground.body.immovable = true
 
-    var platform = this.add.sprite(0, 300, 'platform')
-    this.game.physics.arcade.enable(platform)
-    platform.body.allowGravity = false
-    platform.immovable = true
+    this.platform = this.add.sprite(0, 300, 'platform')
+    this.game.physics.arcade.enable(this.platform)
+    this.platform.body.allowGravity = false
+    this.platform.body.immovable = true
 
     this.player = this.add.sprite(100, 200, 'player', 3)
     this.player.anchor.setTo(0.5)
@@ -39,10 +39,19 @@ export default class extends Phaser.State {
     this.game.physics.arcade.enable(this.player)
   }
 
+  update () {
+    this.game.physics.arcade.collide(this.player, this.ground)
+    this.game.physics.arcade.overlap(this.player, this.platform, this.landed)
+  }
+
   render () {
     // console.log('Game.render()')
     if (__DEV__) {
       // this.game.debug.spriteInfo(this.mushroom, 32, 32)
     }
+  }
+
+  landed (player, ground) {
+    console.log('landed')
   }
 }
