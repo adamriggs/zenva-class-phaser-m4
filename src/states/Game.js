@@ -27,7 +27,7 @@ export default class extends Phaser.State {
 
     // this.game.add.existing(this.mushroom)
 
-    this.ground = this.add.sprite(0, 500, 'ground')
+    this.ground = this.add.sprite(0, 638, 'ground')
     this.game.physics.arcade.enable(this.ground)
     this.ground.body.allowGravity = false
     this.ground.body.immovable = true
@@ -55,12 +55,14 @@ export default class extends Phaser.State {
     this.platforms.setAll('body.immovable', true)
     this.platforms.setAll('body.allowGravity', false)
 
-    this.player = this.add.sprite(100, 200, 'player', 3)
+    this.player = this.add.sprite(10, 545, 'player', 3)
     this.player.anchor.setTo(0.5)
     this.player.animations.add('walking', [0, 1, 2, 1], 6, true)
     this.player.play('walking')
     this.game.physics.arcade.enable(this.player)
     this.player.customParams = {}
+
+    this.game.camera.follow(this.player)
 
     this.createOnscreenControls()
   }
@@ -97,52 +99,56 @@ export default class extends Phaser.State {
   }
 
   createOnscreenControls () {
-    this.leftArrow = this.add.button(20, 535, 'arrowButton')
-    this.rightArrow = this.add.button(110, 535, 'arrowButton')
-    this.actionButton = this.add.button(280, 535, 'actionButton')
+    this.leftArrow = this.add.button(20, 735, 'arrowButton')
+    this.rightArrow = this.add.button(110, 735, 'arrowButton')
+    this.actionButton = this.add.button(280, 735, 'actionButton')
 
     this.leftArrow.alpha = 0.5
     this.rightArrow.alpha = 0.5
     this.actionButton.alpha = 0.5
 
-    this.actionButton.events.onInputDown.add(function() {
+    this.leftArrow.fixedToCamera = true
+    this.rightArrow.fixedToCamera = true
+    this.actionButton.fixedToCamera = true
+
+    this.actionButton.events.onInputDown.add(function () {
       this.player.customParams.mustJump = true
     }, this)
 
-    this.actionButton.events.onInputUp.add(function() {
+    this.actionButton.events.onInputUp.add(function () {
       this.player.customParams.mustJump = false
     }, this)
 
     // left
-    this.leftArrow.events.onInputDown.add(function() {
+    this.leftArrow.events.onInputDown.add(function () {
       this.player.customParams.isMovingLeft = true
     }, this)
 
-    this.leftArrow.events.onInputUp.add(function() {
-      this.player.customParams.isMovingLeft= false
+    this.leftArrow.events.onInputUp.add(function () {
+      this.player.customParams.isMovingLeft = false
     }, this)
 
-    this.leftArrow.events.onInputOver.add(function() {
+    this.leftArrow.events.onInputOver.add(function () {
       this.player.customParams.isMovingLeft = true
     }, this)
 
-    this.leftArrow.events.onInputOut.add(function() {
-      this.player.customParams.isMovingLeft= false
+    this.leftArrow.events.onInputOut.add(function () {
+      this.player.customParams.isMovingLeft = false
     }, this)
 
     // right
-    this.rightArrow.events.onInputDown.add(function() {
+    this.rightArrow.events.onInputDown.add(function () {
       this.player.customParams.isMovingRight = true
     }, this)
 
-    this.rightArrow.events.onInputUp.add(function() {
+    this.rightArrow.events.onInputUp.add(function () {
       this.player.customParams.isMovingRight = false
     }, this)
-    this.rightArrow.events.onInputOver.add(function() {
+    this.rightArrow.events.onInputOver.add(function () {
       this.player.customParams.isMovingRight = true
     }, this)
 
-    this.rightArrow.events.onInputOut.add(function() {
+    this.rightArrow.events.onInputOut.add(function () {
       this.player.customParams.isMovingRight = false
     }, this)
   }

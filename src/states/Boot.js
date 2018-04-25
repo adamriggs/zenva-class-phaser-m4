@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 // import WebFont from 'webfontloader'
-// import config from '../config'
+import config from '../config'
 
 export default class extends Phaser.State {
   init () {
@@ -13,6 +13,8 @@ export default class extends Phaser.State {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
     this.game.physics.arcade.gravity.y = 1000
+
+    this.game.world.setBounds(0, 0, config.gameWidth, config.gameHeight + 300)
   }
 
   preload () {
