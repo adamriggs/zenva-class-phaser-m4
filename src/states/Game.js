@@ -31,11 +31,29 @@ export default class extends Phaser.State {
     this.game.physics.arcade.enable(this.ground)
     this.ground.body.allowGravity = false
     this.ground.body.immovable = true
+    this.ground.scale.x = 1.3
 
-    this.platform = this.add.sprite(0, 300, 'platform')
-    this.game.physics.arcade.enable(this.platform)
-    this.platform.body.allowGravity = false
-    this.platform.body.immovable = true
+    // this.platform = this.add.sprite(0, 300, 'platform')
+    // this.game.physics.arcade.enable(this.platform)
+    // this.platform.body.allowGravity = false
+    // this.platform.body.immovable = true
+
+    var platformData = [
+      {'x': 0, 'y': 430},
+      {'x': 45, 'y': 560},
+      {'x': 90, 'y': 290},
+      {'x': 0, 'y': 140}
+    ]
+
+    this.platforms = this.add.group()
+    this.platforms.enableBody = true
+
+    platformData.forEach(function (element) {
+      this.platforms.create(element.x, element.y, 'platform')
+    }, this)
+
+    this.platforms.setAll('body.immovable', true)
+    this.platforms.setAll('body.allowGravity', false)
 
     this.player = this.add.sprite(100, 200, 'player', 3)
     this.player.anchor.setTo(0.5)
@@ -49,7 +67,7 @@ export default class extends Phaser.State {
 
   update () {
     this.game.physics.arcade.collide(this.player, this.ground)
-    this.game.physics.arcade.collide(this.player, this.platform)
+    this.game.physics.arcade.collide(this.player, this.platforms)
 
     this.player.body.velocity.x = 0
 
