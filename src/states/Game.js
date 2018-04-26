@@ -1,6 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import Mushroom from '../sprites/Mushroom'
+import level from '../level'
 
 export default class extends Phaser.State {
   init () {
