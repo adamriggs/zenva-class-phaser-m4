@@ -23,11 +23,11 @@ export default class extends Phaser.State {
     this.game.physics.arcade.enable(this.ground)
     this.ground.body.allowGravity = false
     this.ground.body.immovable = true
-    this.ground.scale.x = 1.3
+    // this.ground.scale.x = 1.3
 
     // parse the level data
     this.levelData = JSON.parse(this.game.cache.getText('level'))
-    console.log(this.levelData)
+    // console.log(this.levelData)
 
     this.platforms = this.add.group()
     this.platforms.enableBody = true
@@ -57,6 +57,13 @@ export default class extends Phaser.State {
     this.game.physics.enable(this.goal)
     this.goal.body.allowGravity = false
 
+    // create barrels
+    this.barrels = this.add.group()
+    this.barrels.enableBody = true
+
+    this.createBarrel()
+    this.barrelCreator = this.game.time.events.loop(Phaser.Timer.SECOND * this.levelData.barrelFrequency, this.createBarrel, this)
+
     // create player
     this.player = this.add.sprite(this.levelData.playerStart.x, this.levelData.playerStart.y, 'player', 3)
     this.player.anchor.setTo(0.5)
@@ -74,7 +81,11 @@ export default class extends Phaser.State {
     this.game.physics.arcade.collide(this.player, this.ground)
     this.game.physics.arcade.collide(this.player, this.platforms)
 
+    this.game.physics.arcade.collide(this.barrels, this.ground)
+    this.game.physics.arcade.collide(this.barrels, this.platforms)
+
     this.game.physics.arcade.overlap(this.player, this.fires, this.killPlayer)
+    this.game.physics.arcade.overlap(this.player, this.barrels, this.killPlayer)
     this.game.physics.arcade.overlap(this.player, this.goal, this.win)
 
     this.player.body.velocity.x = 0
@@ -98,6 +109,12 @@ export default class extends Phaser.State {
       this.player.body.velocity.y = -this.JUMPING_SPEED
       this.player.customParams.mustJump = false
     }
+
+    this.barrels.forEach(function (element) {
+      if(element.x < 10 && element.y > 600) {
+        element.kill()
+      }
+    }, this)
   }
 
   render () {
@@ -167,12 +184,29 @@ export default class extends Phaser.State {
   }
 
   killPlayer (player, fire) {
-    console.log('killPlayer(', player, fire, ')')
+    //console.log('killPlayer(', player, fire, ')')
     game.state.start('Game')
   }
 
   win (player, goal) {
     alert('you win!')
     game.state.start('Game')
+  }
+
+  createBarrel () {
+    console.log('createBarrel()')
+    // give me first dead sprite
+    var barrel = this.barrels.getFirstExists(false)
+
+    if (!barrel) {
+      console.log('new barrel created')
+      barrel = this.barrels.create(0 ,0, 'barrel')
+    }
+
+    barrel.body.collideWorldBounds = true
+    barrel.body.bounce.set(1, 0)
+
+    barrel.reset(this.levelData.goal.x, this.levelData.goal.y)
+    barrel.body.velocity.x = this.levelData.barrelSpeed
   }
 }
