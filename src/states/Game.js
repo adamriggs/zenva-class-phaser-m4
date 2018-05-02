@@ -71,6 +71,7 @@ export default class extends Phaser.State {
     this.player.play('walking')
     this.game.physics.arcade.enable(this.player)
     this.player.customParams = {}
+    this.player.body.collideWorldBounds = true
 
     this.game.camera.follow(this.player)
 
